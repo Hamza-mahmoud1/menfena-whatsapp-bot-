@@ -1,3 +1,4 @@
+// --- الداتا الأساسية ---
 const allQuestions = [
     { q: "مين فينا بيلبس هدوم الخروج وينام بيها من الكسل؟", a: "أنا طبعاً ملك الانتخة", b: "لأ مستحيل أعمل كدة", popular: "A" },
     { q: "مين فينا بيشم ريحة الأكل من آخر الشارع؟", a: "رادار أكل متحرك", b: "مناخيري تعبانة شوية", popular: "A" },
@@ -11,52 +12,72 @@ let currentQuestion = null;
 let streak = 0;
 let isSignup = false;
 
-// نظام التسجيل
+// --- نظام التسجيل (تم التأمين) ---
 function toggleAuthMode() {
     isSignup = !isSignup;
     const signupInputs = document.querySelectorAll('.signup-only');
     signupInputs.forEach(el => el.style.display = isSignup ? 'block' : 'none');
     
-    document.getElementById('auth-title').innerText = isSignup ? 'إنشاء حساب جديد' : 'تسجيل الدخول';
-    document.getElementById('auth-btn').innerText = isSignup ? 'سجل دلوقتي' : 'دخول سريع';
-    document.getElementById('toggle-text').innerHTML = isSignup ? 'عندك حساب؟ <span>ادخل</span>' : 'معندكش حساب؟ <span>سجل دلوقتي</span>';
+    // التأكد من وجود العناصر قبل تغيير النص عشان ميعلقش
+    const authTitle = document.getElementById('auth-title');
+    const authBtn = document.getElementById('auth-btn');
+    const toggleText = document.getElementById('toggle-text');
+
+    if (authTitle) authTitle.innerText = isSignup ? 'إنشاء حساب جديد' : 'تسجيل الدخول';
+    if (authBtn) authBtn.innerText = isSignup ? 'سجل دلوقتي' : 'دخول سريع';
+    if (toggleText) toggleText.innerHTML = isSignup ? 'عندك حساب؟ <span>ادخل</span>' : 'معندكش حساب؟ <span>سجل دلوقتي</span>';
 }
 
 function handleAuth() {
-    const email = document.getElementById('email').value;
-    const pass = document.getElementById('password').value;
+    const emailField = document.getElementById('email');
+    const passField = document.getElementById('password');
+    const authBtn = document.getElementById('auth-btn');
 
+    // لو الحقول مش موجودة أصلاً (غلطة في الـ HTML ID)
+    if (!emailField || !passField) {
+        console.error("المشكلة في الـ IDs بملف الـ HTML.. مش لاقي email أو password");
+        alert("في مشكلة في الصفحة، كلم المبرمج!");
+        return;
+    }
+
+    const email = emailField.value;
+    const pass = passField.value;
+
+    // شرط بسيط للدخول (إيميل فيه @ وباسورد 4 حروف)
     if (email.includes("@") && pass.length >= 4) {
-        // تأثير تحميل بسيط
-        document.getElementById('auth-btn').innerText = "جاري التحميل...";
+        if (authBtn) authBtn.innerText = "جاري التحميل...";
+        
         setTimeout(() => {
-            document.getElementById('auth-screen').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('auth-screen').style.display = 'none';
-                document.getElementById('game-container').style.display = 'flex';
+            const authScreen = document.getElementById('auth-screen');
+            const gameContainer = document.getElementById('game-container');
+            
+            if (authScreen) authScreen.style.display = 'none';
+            if (gameContainer) {
+                gameContainer.style.display = 'flex';
+                // تصفير المحادثة عشان ميتراكمش رسائل قديمة
+                const chatDisplay = document.getElementById('chat-display');
+                if (chatDisplay) chatDisplay.innerHTML = "";
                 startNewGame();
-            }, 500);
-        }, 1000);
+            }
+        }, 800);
     } else {
-        alert("يا ريس دخل بيانات صح (ايميل وباسورد أكتر من 4 حروف)");
+        alert("دخل بيانات كاملة يا وحش (إيميل صح وباسورد 4 حروف ع الأقل)");
     }
 }
 
-function googleSignIn() {
-    handleAuth(); // محاكاة للدخول بجوجل
-}
-
-// نظام اللعبة
+// --- نظام اللعبة ---
 function startNewGame() {
     addMessage("أهلاً بيك يا بطل في 'مين فينا؟'.. 🔥", "bot");
     setTimeout(() => {
         addMessage("هسألك أسئلة وهشوف تفكيرك زي بقية الناس ولا أنت 'فريد من نوعك'؟ 😂", "bot");
+        setTimeout(getNextQuestion, 1500);
     }, 1000);
-    setTimeout(getNextQuestion, 2500);
 }
 
 function addMessage(text, type) {
     const chat = document.getElementById('chat-display');
+    if (!chat) return;
+    
     const b = document.createElement('div');
     b.className = `bubble ${type}`;
     b.innerText = text;
@@ -67,24 +88,27 @@ function addMessage(text, type) {
 function getNextQuestion() {
     if(availableQuestions.length === 0) availableQuestions = [...allQuestions];
     
-    document.getElementById('typing-status').innerText = "بيكتب الآن...";
+    const status = document.getElementById('typing-status');
+    if (status) status.innerText = "بيكتب الآن...";
     
     setTimeout(() => {
-        document.getElementById('typing-status').innerText = "متصل الآن";
+        if (status) status.innerText = "متصل الآن";
         const idx = Math.floor(Math.random() * availableQuestions.length);
         currentQuestion = availableQuestions[idx];
         availableQuestions.splice(idx, 1);
         
         addMessage(currentQuestion.q, 'bot');
         
-        // تحديث الأزرار مع أنيميشن بسيط
         const btnA = document.getElementById('btn-a');
         const btnB = document.getElementById('btn-b');
-        btnA.innerText = currentQuestion.a;
-        btnB.innerText = currentQuestion.b;
-        btnA.style.transform = "scale(1)";
-        btnB.style.transform = "scale(1)";
-    }, 1500);
+        
+        if (btnA && btnB) {
+            btnA.innerText = currentQuestion.a;
+            btnB.innerText = currentQuestion.b;
+            btnA.style.transform = "scale(1)";
+            btnB.style.transform = "scale(1)";
+        }
+    }, 1200);
 }
 
 function userReply(choice) {
@@ -93,9 +117,11 @@ function userReply(choice) {
     const userText = choice === 'A' ? currentQuestion.a : currentQuestion.b;
     addMessage(userText, 'user');
     
-    // منع الضغط المتكرر
-    document.getElementById('btn-a').style.transform = "scale(0.9)";
-    document.getElementById('btn-b').style.transform = "scale(0.9)";
+    // أنيميشن للأزرار
+    const btnA = document.getElementById('btn-a');
+    const btnB = document.getElementById('btn-b');
+    if (btnA) btnA.style.transform = "scale(0.9)";
+    if (btnB) btnB.style.transform = "scale(0.9)";
 
     setTimeout(() => {
         if(choice === currentQuestion.popular) {
@@ -105,14 +131,11 @@ function userReply(choice) {
             streak = 0;
             addMessage("😅 لااااا.. الناس اختارت التاني. الاستريك ضاع!", "bot");
         }
-        document.getElementById('streak-count').innerText = streak;
         
-        // هز خفيف للاستريك لو زاد
-        const sBadge = document.querySelector('.streak-badge');
-        sBadge.style.transform = "scale(1.2)";
-        setTimeout(() => sBadge.style.transform = "scale(1)", 200);
-
-        setTimeout(getNextQuestion, 2000);
+        const streakCount = document.getElementById('streak-count');
+        if (streakCount) streakCount.innerText = streak;
+        
+        setTimeout(getNextQuestion, 1500);
     }, 1000);
 }
 
