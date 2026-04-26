@@ -31,10 +31,28 @@ body { background: #d1d7db; display: flex; justify-content: center; height: 100v
 .bot { background: white; align-self: flex-start; border-top-left-radius: 0; }
 .user { background: var(--wa-light-green); align-self: flex-end; border-top-right-radius: 0; }
 
-/* الأزرار جنب بعض */
+/* الأزرار جنب بعض (تعديل يمين وشمال) */
 .input-area { background: #f0f0f0; padding: 15px; border-top: 1px solid #ddd; }
-.btn-group { display: flex; flex-direction: row; gap: 10px; width: 100%; }
-.answer-btn { flex: 1; padding: 15px 5px; border: 2px solid var(--wa-green); background: white; color: var(--wa-teal); border-radius: 12px; font-weight: bold; cursor: pointer; display: none; transition: 0.2s; font-size: 13px; text-align: center; }
+.btn-group { 
+    display: flex; 
+    flex-direction: row; /* يخليهم جنب بعض */
+    gap: 10px; 
+    width: 100%; 
+}
+.answer-btn { 
+    flex: 1; /* يخلي الزرارين نفس الطول بالظبط */
+    padding: 15px 5px; 
+    border: 2px solid var(--wa-green); 
+    background: white; 
+    color: var(--wa-teal); 
+    border-radius: 12px; 
+    font-weight: bold; 
+    cursor: pointer; 
+    display: none; 
+    transition: 0.2s; 
+    font-size: 13px; 
+    text-align: center; 
+}
 .answer-btn:active { transform: scale(0.95); background: var(--wa-light-green); }
 
 .vote-stats { display: flex; justify-content: space-around; margin-bottom: 10px; font-weight: bold; color: var(--wa-teal); background: #fff; padding: 5px; border-radius: 10px; border: 1px dashed var(--wa-green); }
