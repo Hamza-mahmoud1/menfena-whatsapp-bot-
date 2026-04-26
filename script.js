@@ -4,14 +4,15 @@ const allQuestions = [
     { q: "تمثيل النوم قدام أبوك ؟ 😴", a: "كنت بقوم أكلمه عادي", b: "كنت بقطع النفس خالص", popular: "B" },
     { q: "رجل برا الغطا والعفريت ؟ 🧟‍♂️", a: "أنا ملك الجرأة", b: "الغطا ده أماني الوحيد", popular: "B" },
     { q: "قفل باب الثلاجة براحة ؟ 💡", a: "عارف السر أصلاً!", b: "ضيعت عمري مراقبة", popular: "A" },
-    { q: "كلام في المروحة (روبوت) ؟ 🤖", a: "صوتي كروان", b: "كنت بغني للريش", popular: "B" }
+    { q: "كلام في المروحة (روبوت) ؟ 🤖", a: "صوتي كروان", b: "كنت بغني للريش", popular: "B" },
+    { q: "ملائة السرير وسوبر مان ؟ 🦸‍♂️", a: "طرت بجد والله", b: "اتفتحت من الوقعة", popular: "A" }
 ];
 
 let availableQuestions = [...allQuestions];
 let currentQuestion = null;
 let streak = 0;
 
-// --- نظام الحسابات (Cloud Simulation) ---
+// --- نظام الحسابات (إيميل + سحابة محلية) ---
 
 function toggleAuth(isSignup) {
     const title = document.getElementById('auth-title');
@@ -33,49 +34,41 @@ function handleSignup() {
     const email = document.getElementById('email').value;
     const pass = document.getElementById('password').value;
 
-    if(!email.includes("@") || pass.length < 4) {
-        return alert("برجاء إدخال إيميل صحيح وكلمة سر قوية");
-    }
+    if(!email.includes("@")) return alert("اكتب بريد إلكتروني صح");
+    if(pass.length < 4) return alert("كلمة السر لازم تكون 4 أرقام أو أكتر");
 
-    let users = JSON.parse(localStorage.getItem('game_users')) || {};
-    
-    if(users[email]) {
-        return alert("هذا الإيميل مسجل مسبقاً!");
-    }
+    let users = JSON.parse(localStorage.getItem('min_fina_cloud')) || {};
+    if(users[email]) return alert("الإيميل ده متسجل قبل كدة!");
 
     users[email] = pass;
-    localStorage.setItem('game_users', JSON.stringify(users));
-    alert("تم إنشاء الحساب بنجاح! سجل دخولك الآن بنفس البيانات.");
+    localStorage.setItem('min_fina_cloud', JSON.stringify(users));
+    alert("تم إنشاء حسابك بنجاح! تقدر تدخل دلوقتي.");
     toggleAuth(false);
 }
 
 function handleLogin() {
     const email = document.getElementById('email').value;
     const pass = document.getElementById('password').value;
-    let users = JSON.parse(localStorage.getItem('game_users')) || {};
+    let users = JSON.parse(localStorage.getItem('min_fina_cloud')) || {};
 
     if(users[email] && users[email] === pass) {
         document.getElementById('auth-screen').style.display = 'none';
         document.getElementById('game-container').style.display = 'flex';
         startGame();
     } else {
-        alert("الإيميل أو كلمة السر خطأ، أو الحساب غير موجود.");
+        alert("الإيميل أو كلمة السر غلط.. تأكد إنك عملت حساب الأول");
     }
 }
 
 // --- نظام اللعبة ---
 
 function startGame() {
-    addMessage("أهلاً بيك في تحدي 'مين فينا؟'.. 🔥", "bot");
-    updateOnlineCounter();
-    setTimeout(getNextQuestion, 1000);
-}
-
-function updateOnlineCounter() {
+    addMessage("أهلاً بيك في تحدي 'مين فينا؟'.. ✨", "bot");
     setInterval(() => {
-        const num = Math.floor(Math.random() * 50) + 1200;
+        const num = Math.floor(Math.random() * 20) + 1400;
         document.getElementById('fake-online').innerText = num.toLocaleString();
-    }, 4000);
+    }, 3000);
+    setTimeout(getNextQuestion, 1000);
 }
 
 function addMessage(text, type) {
@@ -100,6 +93,7 @@ function getNextQuestion() {
 
         addMessage(currentQuestion.q, 'bot');
 
+        // إظهار الزرارين جنب بعض
         const bA = document.getElementById('btn-a');
         const bB = document.getElementById('btn-b');
         bA.innerText = currentQuestion.a;
