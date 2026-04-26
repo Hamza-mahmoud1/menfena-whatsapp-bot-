@@ -1,4 +1,4 @@
-// الأسئلة مستوحاة من ملف الـ PDF اللي بعته
+// مصفوفة الأسئلة
 const allQuestions = [
     { q: "طفي النور والجري قبل الضلمة؟ 🏃‍♂️", a: "أنا بسبق الضلمة!", b: "كنت بطير من الرعب", popular: "A" },
     { q: "تمثيل النوم قدام أبوك لما يدخل؟ 😴", a: "كنت بقوم أكلمه عادي", b: "كنت بقطع النفس خالص", popular: "B" },
@@ -10,41 +10,47 @@ const allQuestions = [
     { q: "ملائة السرير وسوبر مان؟ 🦸‍♂️", a: "طرت بجد والله", b: "اتفتحت من الوقعة", popular: "A" },
     { q: "خوف من شماعة الهدوم بالليل؟ 🧥", a: "كنت بصاحبها عادي", b: "ركبي كانت بتخبط في بعض", popular: "B" },
     { q: "شرب الشاي في غطا القزازة؟ ☕", a: "باشا من يومي", b: "برستيج الغلابة", popular: "A" }
-    // ملحوظة: يمكنك إضافة الـ 500 سؤال هنا بنفس التنسيق
 ];
 
 let availableQuestions = [...allQuestions];
 let currentQuestion = null;
 let streak = 0;
 
+// دالة تسجيل الدخول
 function handleAuth() {
     const email = document.getElementById('email').value;
-    if(email.includes("@")) {
+    if(email && email.includes("@")) {
         document.getElementById('auth-screen').style.display = 'none';
         document.getElementById('game-container').style.display = 'flex';
         startNewGame();
-    } else { alert("دخل إيميل صح يا وحش!"); }
+    } else {
+        alert("يا ريس دخل إيميل صح (لازم يكون فيه @)");
+    }
 }
 
+// بداية اللعبة
 function startNewGame() {
-    addMessage("يا أهلاً بيك في تحدي الـ 500 سؤال.. مش هنكرر سؤال غير لما يخلصوا! 🔥", "bot");
-    setTimeout(getNextQuestion, 1500);
+    addMessage("أهلاً بيك في تحدي الـ 500 سؤال.. 🔥", "bot");
+    setTimeout(getNextQuestion, 1000);
 }
 
+// إضافة رسالة للشات
 function addMessage(text, type) {
     const chat = document.getElementById('chat-display');
-    const b = document.createElement('div');
-    b.className = `bubble ${type}`;
-    b.innerText = text;
-    chat.appendChild(b);
-    chat.scrollTop = chat.scrollHeight;
+    if(chat) {
+        const b = document.createElement('div');
+        b.className = `bubble ${type}`;
+        b.innerText = text;
+        chat.appendChild(b);
+        chat.scrollTop = chat.scrollHeight;
+    }
 }
 
+// سحب السؤال القادم بدون تكرار
 function getNextQuestion() {
-    // لو الأسئلة خلصت، بنعيد شحنها من جديد
     if (availableQuestions.length === 0) {
-        addMessage("مبروك! خلصت كل الأسئلة.. هنبدأ نعيدهم تاني عشوائي! 🔄", "bot");
         availableQuestions = [...allQuestions];
+        addMessage("خلصنا الأسئلة وهنعيدها تاني عشوائي! 🔄", "bot");
     }
     
     document.getElementById('typing-status').innerText = "بيكتب الآن...";
@@ -53,38 +59,42 @@ function getNextQuestion() {
         document.getElementById('typing-status').innerText = "متصل الآن";
         const idx = Math.floor(Math.random() * availableQuestions.length);
         currentQuestion = availableQuestions[idx];
-        
-        // حذف السؤال المختار عشان ميتكررش
-        availableQuestions.splice(idx, 1);
+        availableQuestions.splice(idx, 1); // مسح السؤال لمنع التكرار
         
         addMessage(currentQuestion.q, 'bot');
         
+        // إظهار الزراير
         const btnA = document.getElementById('btn-a');
         const btnB = document.getElementById('btn-b');
-        btnA.innerText = currentQuestion.a;
-        btnB.innerText = currentQuestion.b;
-        btnA.style.display = "block";
-        btnB.style.display = "block";
-    }, 1200);
+        if(btnA && btnB) {
+            btnA.innerText = currentQuestion.a;
+            btnB.innerText = currentQuestion.b;
+            btnA.style.display = "block";
+            btnB.style.display = "block";
+        }
+    }, 1000);
 }
 
+// رد المستخدم
 function userReply(choice) {
     if(!currentQuestion) return;
+    
     addMessage(choice === 'A' ? currentQuestion.a : currentQuestion.b, 'user');
+    
     document.getElementById('btn-a').style.display = "none";
     document.getElementById('btn-b').style.display = "none";
 
     setTimeout(() => {
         if(choice === currentQuestion.popular) {
             streak++;
-            addMessage("🔥 وحش! أنت زينا بالظبط", "bot");
+            addMessage("🔥 وحش! رد الأغلبية", "bot");
         } else {
             streak = 0;
-            addMessage("😅 لااا.. رد غريب أوي!", "bot");
+            addMessage("😅 رد غريب أوي!", "bot");
         }
         document.getElementById('streak-count').innerText = streak;
-        setTimeout(getNextQuestion, 1500);
-    }, 1000);
+        setTimeout(getNextQuestion, 1000);
+    }, 800);
 }
 
 function logout() { location.reload(); }
