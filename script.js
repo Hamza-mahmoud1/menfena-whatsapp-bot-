@@ -1,10 +1,10 @@
-// الأسئلة المأخوذة من ملفك
+// مصفوفة الأسئلة
 const allQuestions = [
     { q: "طفي النور والجري قبل الضلمة ؟ 🏃‍♂️", a: "أنا بسبق الضلمة", b: "كنت بطير من الرعب", popular: "A" },
     { q: "تمثيل النوم قدام أبوك ؟ 😴", a: "كنت بقوم أكلمه عادي", b: "كنت بقطع النفس خالص", popular: "B" },
     { q: "رجل برا الغطا والعفريت ؟ 🧟‍♂️", a: "أنا ملك الجرأة", b: "الغطا ده أماني الوحيد", popular: "B" },
     { q: "قفل باب الثلاجة براحة ؟ 💡", a: "عارف السر أصلاً!", b: "ضيعت عمري مراقبة", popular: "A" },
-    { q: "كلام في المروحة (روبوت) ؟ 🤖", a: "صوتي كروان", b: "كنت بغني للريش", popular: "B" },
+    { q: "كلام في المروحة (صوت روبوت) ؟ 🤖", a: "صوتي كروان", b: "كنت بغني للريش", popular: "B" },
     { q: "ملائة السرير وسوبر مان ؟ 🦸‍♂️", a: "طرت بجد والله", b: "اتفتحت من الوقعة", popular: "A" }
 ];
 
@@ -12,7 +12,7 @@ let availableQuestions = [...allQuestions];
 let currentQuestion = null;
 let streak = 0;
 
-// --- نظام الحسابات بالإيميل ---
+// --- نظام الحسابات (Cloud Simulation) ---
 
 function toggleAuth(isSignup) {
     const title = document.getElementById('auth-title');
@@ -34,15 +34,15 @@ function handleSignup() {
     const email = document.getElementById('email').value;
     const pass = document.getElementById('password').value;
 
-    if(!email.includes("@")) return alert("يا ريس البريد لازم يكون فيه @");
-    if(pass.length < 4) return alert("الباسورد لازم يكون 4 أرقام أو حروف على الأقل");
+    if(!email || !email.includes("@")) return alert("يا ريس البريد الإلكتروني مش مظبوط");
+    if(pass.length < 4) return alert("كلمة السر لازم تكون 4 أرقام أو حروف على الأقل");
 
     let db = JSON.parse(localStorage.getItem('min_fina_users')) || {};
-    if(db[email]) return alert("الإيميل ده مسجل قبل كدة، جرب تدخل بيه");
+    if(db[email]) return alert("الإيميل ده مسجل عندنا قبل كدة!");
 
     db[email] = pass;
     localStorage.setItem('min_fina_users', JSON.stringify(db));
-    alert("تم! حسابك اتسجل. تقدر تدخل دلوقتي بنفس البيانات.");
+    alert("مبروك! حسابك اتعمل بالسحابة. سجل دخولك بقى.");
     toggleAuth(false);
 }
 
@@ -56,7 +56,7 @@ function handleLogin() {
         document.getElementById('game-container').style.display = 'flex';
         startGame();
     } else {
-        alert("الإيميل أو كلمة السر غلط.. تأكد إنك عملت حساب الأول");
+        alert("الإيميل أو كلمة السر غلط.. جرب تنشئ حساب الأول");
     }
 }
 
@@ -64,7 +64,15 @@ function handleLogin() {
 
 function startGame() {
     addMessage("أهلاً بيك في تحدي 'مين فينا؟'.. ✨", "bot");
+    updateOnlineCounter();
     setTimeout(getNextQuestion, 1000);
+}
+
+function updateOnlineCounter() {
+    setInterval(() => {
+        const num = Math.floor(Math.random() * 30) + 1450;
+        document.getElementById('fake-online').innerText = num.toLocaleString();
+    }, 4000);
 }
 
 function addMessage(text, type) {
@@ -104,6 +112,7 @@ function userReply(choice) {
     document.getElementById('btn-a').style.display = "none";
     document.getElementById('btn-b').style.display = "none";
 
+    // تصويت وهمي
     const pA = choice === 'A' ? Math.floor(Math.random()*20)+70 : Math.floor(Math.random()*20)+10;
     const pB = 100 - pA;
 
