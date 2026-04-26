@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مين فينا؟ - واتساب كويز</title>
+    <title>مين فينا؟ - WhatsApp Edition</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,7 +11,8 @@
     <div id="auth-screen" class="auth-overlay">
         <div class="auth-card">
             <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="70" alt="WA">
-            <h2 id="auth-title">تسجيل الدخول</h2>
+            <h2 id="auth-title">مين فينا؟</h2>
+            <p style="color: #666; margin-bottom: 20px;">سجل دخول عشان تبدأ اللعب</p>
             <div class="input-group">
                 <input type="email" id="email" placeholder="البريد الإلكتروني">
                 <input type="password" id="password" placeholder="كلمة السر">
@@ -31,8 +32,8 @@
             <button onclick="logout()" class="logout-btn">خروج</button>
         </header>
 
-        <div class="streak-badge">
-            🔥 استريك: <span id="streak-count">0</span>
+        <div class="streak-badge-container">
+            <div class="streak-badge">🔥 استريك: <span id="streak-count">0</span></div>
         </div>
 
         <main class="chat-screen" id="chat-display"></main>
