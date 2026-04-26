@@ -11,12 +11,23 @@
     <div id="auth-screen" class="auth-overlay">
         <div class="auth-card">
             <div class="main-q-mark">❓</div>
-            <h2>مين فينا؟ ⚡</h2>
-            <p>تحدي ذكريات الطفولة (500 سؤال)</p>
+            <h2 id="auth-title">تسجيل الدخول</h2>
+            <p>تحدي "مين فينا؟" لذكريات الطفولة</p>
+            
             <div class="input-group">
-                <input type="email" id="email" placeholder="البريد الإلكتروني">
+                <input type="text" id="username" placeholder="اسم المستخدم">
+                <input type="password" id="password" placeholder="كلمة السر">
             </div>
-            <button onclick="handleAuth()" class="main-btn">دخول سريع</button>
+
+            <div id="auth-buttons">
+                <button onclick="handleLogin()" class="main-btn">دخول</button>
+                <button onclick="toggleAuth(true)" class="link-btn" id="go-to-signup">ليس لديك حساب؟ إنشاء حساب</button>
+            </div>
+
+            <div id="signup-buttons" style="display:none;">
+                <button onclick="handleSignup()" class="main-btn signup">إنشاء حساب جديد</button>
+                <button onclick="toggleAuth(false)" class="link-btn">لديك حساب بالفعل؟ دخول</button>
+            </div>
         </div>
     </div>
 
@@ -24,7 +35,7 @@
         <header class="wa-header">
             <div class="avatar">❓</div>
             <div class="user-meta">
-                <h3>بوت التحديات 🤖</h3>
+                <h3>مين فينا؟</h3>
                 <p id="typing-status">متصل الآن</p>
             </div>
             <button onclick="logout()" class="logout-btn">خروج</button>
@@ -32,17 +43,18 @@
 
         <div class="info-bar">
             <div class="streak-badge">🔥 استريك: <span id="streak-count">0</span></div>
-            <div class="total-votes">👥 اللاعبين الآن: <span id="fake-online">1,240</span></div>
+            <div class="total-votes">👥 أونلاين: <span id="fake-online">1,402</span></div>
         </div>
 
         <main class="chat-screen" id="chat-display"></main>
 
         <footer class="input-area">
             <div id="vote-stats" class="vote-stats" style="display: none;">
-                <div class="stat-item">الخيار (أ): <span id="stat-a">0</span>%</div>
-                <div class="stat-item">الخيار (ب): <span id="stat-b">0</span>%</div>
+                <div class="stat-item"> (أ): <span id="stat-a">0</span>%</div>
+                <div class="stat-item"> (ب): <span id="stat-b">0</span>%</div>
             </div>
-            <div class="btn-group">
+            
+            <div class="btn-group" id="answer-buttons">
                 <button class="answer-btn" onclick="userReply('A')" id="btn-a"></button>
                 <button class="answer-btn" onclick="userReply('B')" id="btn-b"></button>
             </div>
