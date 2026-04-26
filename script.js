@@ -1,56 +1,81 @@
-// الأسئلة
+// مصفوفة الأسئلة
 const allQuestions = [
     { q: "طفي النور والجري قبل الضلمة ؟ 🏃‍♂️", a: "أنا بسبق الضلمة", b: "كنت بطير من الرعب", popular: "A" },
     { q: "تمثيل النوم قدام أبوك ؟ 😴", a: "كنت بقوم أكلمه عادي", b: "كنت بقطع النفس خالص", popular: "B" },
     { q: "رجل برا الغطا والعفريت ؟ 🧟‍♂️", a: "أنا ملك الجرأة", b: "الغطا ده أماني الوحيد", popular: "B" },
     { q: "قفل باب الثلاجة براحة ؟ 💡", a: "عارف السر أصلاً!", b: "ضيعت عمري مراقبة", popular: "A" },
-    { q: "كلام في المروحة (روبوت) ؟ 🤖", a: "صوتي كروان", b: "كنت بغني للريش", popular: "B" },
-    { q: "ملائة السرير وسوبر مان ؟ 🦸‍♂️", a: "طرت بجد والله", b: "اتفتحت من الوقعة", popular: "A" }
+    { q: "كلام في المروحة (روبوت) ؟ 🤖", a: "صوتي كروان", b: "كنت بغني للريش", popular: "B" }
 ];
 
 let availableQuestions = [...allQuestions];
 let currentQuestion = null;
 let streak = 0;
 
-// --- نظام الحسابات السحابي (LocalStorage) ---
+// --- نظام الحسابات (Cloud Simulation) ---
+
 function toggleAuth(isSignup) {
-    document.getElementById('auth-title').innerText = isSignup ? "إنشاء حساب جديد" : "تسجيل الدخول";
-    document.getElementById('login-section').style.display = isSignup ? "none" : "block";
-    document.getElementById('signup-section').style.display = isSignup ? "block" : "none";
+    const title = document.getElementById('auth-title');
+    const loginSec = document.getElementById('login-section');
+    const signupSec = document.getElementById('signup-section');
+    
+    if(isSignup) {
+        title.innerText = "إنشاء حساب جديد";
+        loginSec.style.display = "none";
+        signupSec.style.display = "block";
+    } else {
+        title.innerText = "تسجيل الدخول";
+        loginSec.style.display = "block";
+        signupSec.style.display = "none";
+    }
 }
 
 function handleSignup() {
-    const u = document.getElementById('username').value;
-    const p = document.getElementById('password').value;
-    if(!u || !p) return alert("اكتب البيانات كاملة");
+    const email = document.getElementById('email').value;
+    const pass = document.getElementById('password').value;
 
-    let db = JSON.parse(localStorage.getItem('minFinaUsers')) || {};
-    if(db[u]) return alert("الاسم ده محجوز يا ريس");
+    if(!email.includes("@") || pass.length < 4) {
+        return alert("برجاء إدخال إيميل صحيح وكلمة سر قوية");
+    }
 
-    db[u] = p;
-    localStorage.setItem('minFinaUsers', JSON.stringify(db));
-    alert("مبروك! حسابك اتعمل، سجل دخولك بقى");
+    let users = JSON.parse(localStorage.getItem('game_users')) || {};
+    
+    if(users[email]) {
+        return alert("هذا الإيميل مسجل مسبقاً!");
+    }
+
+    users[email] = pass;
+    localStorage.setItem('game_users', JSON.stringify(users));
+    alert("تم إنشاء الحساب بنجاح! سجل دخولك الآن بنفس البيانات.");
     toggleAuth(false);
 }
 
 function handleLogin() {
-    const u = document.getElementById('username').value;
-    const p = document.getElementById('password').value;
-    let db = JSON.parse(localStorage.getItem('minFinaUsers')) || {};
+    const email = document.getElementById('email').value;
+    const pass = document.getElementById('password').value;
+    let users = JSON.parse(localStorage.getItem('game_users')) || {};
 
-    if(db[u] && db[u] === p) {
+    if(users[email] && users[email] === pass) {
         document.getElementById('auth-screen').style.display = 'none';
         document.getElementById('game-container').style.display = 'flex';
         startGame();
     } else {
-        alert("الاسم أو السر غلط.. تأكد إنك عملت حساب أولاً");
+        alert("الإيميل أو كلمة السر خطأ، أو الحساب غير موجود.");
     }
 }
 
-// --- اللعبة ---
+// --- نظام اللعبة ---
+
 function startGame() {
-    addMessage(`يا هلا بيك يا ${document.getElementById('username').value} في "مين فينا؟" ✨`, 'bot');
+    addMessage("أهلاً بيك في تحدي 'مين فينا؟'.. 🔥", "bot");
+    updateOnlineCounter();
     setTimeout(getNextQuestion, 1000);
+}
+
+function updateOnlineCounter() {
+    setInterval(() => {
+        const num = Math.floor(Math.random() * 50) + 1200;
+        document.getElementById('fake-online').innerText = num.toLocaleString();
+    }, 4000);
 }
 
 function addMessage(text, type) {
@@ -89,7 +114,6 @@ function userReply(choice) {
     document.getElementById('btn-a').style.display = "none";
     document.getElementById('btn-b').style.display = "none";
 
-    // تصويت وهمي
     const pA = choice === 'A' ? Math.floor(Math.random()*20)+70 : Math.floor(Math.random()*20)+10;
     const pB = 100 - pA;
 
@@ -106,7 +130,7 @@ function userReply(choice) {
             addMessage(`😅 إجابة نادرة! ${pB}% بس زيك`, 'bot');
         }
         document.getElementById('streak-count').innerText = streak;
-        setTimeout(getNextQuestion, 2000);
+        setTimeout(getNextQuestion, 2500);
     }, 1000);
 }
 
