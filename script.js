@@ -59,11 +59,10 @@ function getNextQuestion() {
         document.getElementById('typing-status').innerText = "متصل الآن";
         const idx = Math.floor(Math.random() * availableQuestions.length);
         currentQuestion = availableQuestions[idx];
-        availableQuestions.splice(idx, 1); // مسح السؤال لمنع التكرار
+        availableQuestions.splice(idx, 1); 
         
         addMessage(currentQuestion.q, 'bot');
         
-        // إظهار الزراير
         const btnA = document.getElementById('btn-a');
         const btnB = document.getElementById('btn-b');
         if(btnA && btnB) {
@@ -97,4 +96,6 @@ function userReply(choice) {
     }, 800);
 }
 
-function logout() { location.reload(); }
+function logout() { 
+    location.reload(); 
+}
