@@ -1,4 +1,4 @@
-// مصفوفة الأسئلة
+// الأسئلة المأخوذة من ملفك
 const allQuestions = [
     { q: "طفي النور والجري قبل الضلمة ؟ 🏃‍♂️", a: "أنا بسبق الضلمة", b: "كنت بطير من الرعب", popular: "A" },
     { q: "تمثيل النوم قدام أبوك ؟ 😴", a: "كنت بقوم أكلمه عادي", b: "كنت بقطع النفس خالص", popular: "B" },
@@ -12,7 +12,7 @@ let availableQuestions = [...allQuestions];
 let currentQuestion = null;
 let streak = 0;
 
-// --- نظام الحسابات (إيميل + سحابة محلية) ---
+// --- نظام الحسابات بالإيميل ---
 
 function toggleAuth(isSignup) {
     const title = document.getElementById('auth-title');
@@ -34,24 +34,24 @@ function handleSignup() {
     const email = document.getElementById('email').value;
     const pass = document.getElementById('password').value;
 
-    if(!email.includes("@")) return alert("اكتب بريد إلكتروني صح");
-    if(pass.length < 4) return alert("كلمة السر لازم تكون 4 أرقام أو أكتر");
+    if(!email.includes("@")) return alert("يا ريس البريد لازم يكون فيه @");
+    if(pass.length < 4) return alert("الباسورد لازم يكون 4 أرقام أو حروف على الأقل");
 
-    let users = JSON.parse(localStorage.getItem('min_fina_cloud')) || {};
-    if(users[email]) return alert("الإيميل ده متسجل قبل كدة!");
+    let db = JSON.parse(localStorage.getItem('min_fina_users')) || {};
+    if(db[email]) return alert("الإيميل ده مسجل قبل كدة، جرب تدخل بيه");
 
-    users[email] = pass;
-    localStorage.setItem('min_fina_cloud', JSON.stringify(users));
-    alert("تم إنشاء حسابك بنجاح! تقدر تدخل دلوقتي.");
+    db[email] = pass;
+    localStorage.setItem('min_fina_users', JSON.stringify(db));
+    alert("تم! حسابك اتسجل. تقدر تدخل دلوقتي بنفس البيانات.");
     toggleAuth(false);
 }
 
 function handleLogin() {
     const email = document.getElementById('email').value;
     const pass = document.getElementById('password').value;
-    let users = JSON.parse(localStorage.getItem('min_fina_cloud')) || {};
+    let db = JSON.parse(localStorage.getItem('min_fina_users')) || {};
 
-    if(users[email] && users[email] === pass) {
+    if(db[email] && db[email] === pass) {
         document.getElementById('auth-screen').style.display = 'none';
         document.getElementById('game-container').style.display = 'flex';
         startGame();
@@ -64,10 +64,6 @@ function handleLogin() {
 
 function startGame() {
     addMessage("أهلاً بيك في تحدي 'مين فينا؟'.. ✨", "bot");
-    setInterval(() => {
-        const num = Math.floor(Math.random() * 20) + 1400;
-        document.getElementById('fake-online').innerText = num.toLocaleString();
-    }, 3000);
     setTimeout(getNextQuestion, 1000);
 }
 
@@ -93,7 +89,7 @@ function getNextQuestion() {
 
         addMessage(currentQuestion.q, 'bot');
 
-        // إظهار الزرارين جنب بعض
+        // إظهار الزرارين جنب بعض (يمين وشمال)
         const bA = document.getElementById('btn-a');
         const bB = document.getElementById('btn-b');
         bA.innerText = currentQuestion.a;
