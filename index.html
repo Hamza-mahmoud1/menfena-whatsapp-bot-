@@ -3,28 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مين فينا؟ - WhatsApp Edition</title>
+    <title>مين فينا؟ - تحدي الـ 500 سؤال</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div id="auth-screen" class="auth-overlay">
         <div class="auth-card">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="70" alt="WA">
-            <h2 id="auth-title">مين فينا؟</h2>
-            <p style="color: #666; margin-bottom: 20px;">سجل دخول عشان تبدأ اللعب</p>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="70">
+            <h2>مين فينا؟ ⚡</h2>
+            <p>تحدي ذكريات الطفولة (500 سؤال)</p>
             <div class="input-group">
                 <input type="email" id="email" placeholder="البريد الإلكتروني">
                 <input type="password" id="password" placeholder="كلمة السر">
             </div>
-            <button onclick="handleAuth()" id="auth-btn" class="main-btn">دخول سريع</button>
-            <p onclick="toggleAuthMode()" id="toggle-text">معندكش حساب؟ <span>سجل دلوقتي</span></p>
+            <button onclick="handleAuth()" class="main-btn">دخول سريع</button>
         </div>
     </div>
 
     <div id="game-container" class="app-wrapper" style="display:none;">
         <header class="wa-header">
-            <div class="avatar">❓</div>
+            <div class="avatar">👦</div>
             <div class="user-meta">
                 <h3>مين فينا؟ (بوت)</h3>
                 <p id="typing-status">متصل الآن</p>
@@ -40,8 +39,8 @@
 
         <footer class="input-area">
             <div class="btn-group">
-                <button class="answer-btn" onclick="userReply('A')" id="btn-a">اختيار أ</button>
-                <button class="answer-btn" onclick="userReply('B')" id="btn-b">اختيار ب</button>
+                <button class="answer-btn" onclick="userReply('A')" id="btn-a"></button>
+                <button class="answer-btn" onclick="userReply('B')" id="btn-b"></button>
             </div>
         </footer>
     </div>
