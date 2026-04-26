@@ -3,69 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مين فينا؟ - اللعبة الأصلية</title>
+    <title>مين فينا؟ - واتساب كويز</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div id="auth-screen" class="auth-overlay">
         <div class="auth-card">
-            <div class="logo-area">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="70" alt="WA">
-                <div class="badge-new">NEW</div>
-            </div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="70" alt="WA">
             <h2 id="auth-title">تسجيل الدخول</h2>
-            <p class="subtitle">استمتع بتجربة "مين فينا" مع صحابك</p>
-            
             <div class="input-group">
                 <input type="email" id="email" placeholder="البريد الإلكتروني">
                 <input type="password" id="password" placeholder="كلمة السر">
-                <input type="password" id="confirm-password" class="signup-only" placeholder="تأكيد كلمة السر">
             </div>
-
             <button onclick="handleAuth()" id="auth-btn" class="main-btn">دخول سريع</button>
-            <div class="divider"><span>أو</span></div>
-            <button onclick="googleSignIn()" class="google-btn">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="18">
-                التسجيل عبر Google
-            </button>
-            
             <p onclick="toggleAuthMode()" id="toggle-text">معندكش حساب؟ <span>سجل دلوقتي</span></p>
         </div>
     </div>
 
     <div id="game-container" class="app-wrapper" style="display:none;">
         <header class="wa-header">
-            <div class="header-info">
-                <div class="avatar-container">
-                    <div class="avatar">❓</div>
-                    <div class="online-dot"></div>
-                </div>
-                <div class="user-meta">
-                    <h3>مين فينا؟ (بوت)</h3>
-                    <p id="typing-status">متصل الآن</p>
-                </div>
-                <button onclick="logout()" class="logout-btn">خروج</button>
+            <div class="avatar">❓</div>
+            <div class="user-meta">
+                <h3>مين فينا؟ (بوت)</h3>
+                <p id="typing-status">متصل الآن</p>
             </div>
+            <button onclick="logout()" class="logout-btn">خروج</button>
         </header>
 
-        <div class="streak-wrapper">
-            <div class="streak-badge">
-                <span class="fire-icon">🔥</span>
-                <span class="label">سلسلة الانتصارات: </span>
-                <span id="streak-count">0</span>
-            </div>
+        <div class="streak-badge">
+            🔥 استريك: <span id="streak-count">0</span>
         </div>
 
-        <main class="chat-screen" id="chat-display">
-            </main>
+        <main class="chat-screen" id="chat-display"></main>
 
         <footer class="input-area">
-            <div class="action-bar">
-                <div class="btn-group">
-                    <button class="answer-btn" onclick="userReply('A')" id="btn-a">جاري التحميل..</button>
-                    <button class="answer-btn" onclick="userReply('B')" id="btn-b">جاري التحميل..</button>
-                </div>
+            <div class="btn-group">
+                <button class="answer-btn" onclick="userReply('A')" id="btn-a">اختيار أ</button>
+                <button class="answer-btn" onclick="userReply('B')" id="btn-b">اختيار ب</button>
             </div>
         </footer>
     </div>
