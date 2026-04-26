@@ -1,32 +1,90 @@
-:root {
-    --wa-teal: #075e54; --wa-green: #25d366;
-    --wa-light-green: #dcf8c6; --wa-bg: #e5ddd5;
+// الأسئلة مستوحاة من ملف الـ PDF اللي بعته
+const allQuestions = [
+    { q: "طفي النور والجري قبل الضلمة؟ 🏃‍♂️", a: "أنا بسبق الضلمة!", b: "كنت بطير من الرعب", popular: "A" },
+    { q: "تمثيل النوم قدام أبوك لما يدخل؟ 😴", a: "كنت بقوم أكلمه عادي", b: "كنت بقطع النفس خالص", popular: "B" },
+    { q: "رجل برا الغطا والعفريت بالليل؟ 🧟‍♂️", a: "أنا ملك الجرأة", b: "الغطا ده أماني الوحيد", popular: "B" },
+    { q: "قفل باب الثلاجة براحة عشان تشوف النور بيفصل إمتى؟ 💡", a: "كنت بضيع عمري مراقبة", b: "عارف السر أصلاً!", popular: "A" },
+    { q: "كلام في المروحة وهي شغالة (صوت روبوت)؟ 🤖", a: "صوتي كان كروان", b: "كنت بغني للريش", popular: "B" },
+    { q: "عدم لمس فواصل السيراميك وأنت ماشي؟ 🏁", a: "مايسترو خطوات", b: "كانت لافا هتموتني لو لمستها", popular: "B" },
+    { q: "بلغ اللبانة وشجرة البطن؟ 🌳", a: "زرعت غابة في بطني", b: "كنت بكتب وصيتي من الخوف", popular: "B" },
+    { q: "ملائة السرير وسوبر مان؟ 🦸‍♂️", a: "طرت بجد والله", b: "اتفتحت من الوقعة", popular: "A" },
+    { q: "خوف من شماعة الهدوم بالليل؟ 🧥", a: "كنت بصاحبها عادي", b: "ركبي كانت بتخبط في بعض", popular: "B" },
+    { q: "شرب الشاي في غطا القزازة؟ ☕", a: "باشا من يومي", b: "برستيج الغلابة", popular: "A" }
+    // ملحوظة: يمكنك إضافة الـ 500 سؤال هنا بنفس التنسيق
+];
+
+let availableQuestions = [...allQuestions];
+let currentQuestion = null;
+let streak = 0;
+
+function handleAuth() {
+    const email = document.getElementById('email').value;
+    if(email.includes("@")) {
+        document.getElementById('auth-screen').style.display = 'none';
+        document.getElementById('game-container').style.display = 'flex';
+        startNewGame();
+    } else { alert("دخل إيميل صح يا وحش!"); }
 }
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-body { background: #d1d7db; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
 
-.auth-overlay { position: fixed; inset: 0; background: #f0f2f5; display: flex; align-items: center; justify-content: center; z-index: 1000; }
-.auth-card { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-.auth-card input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; }
-.main-btn { width: 100%; padding: 15px; background: var(--wa-green); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
-
-.app-wrapper { 
-    width: 100%; max-width: 450px; height: 100vh; background: var(--wa-bg) url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
-    display: flex; flex-direction: column; box-shadow: 0 0 20px rgba(0,0,0,0.2); 
+function startNewGame() {
+    addMessage("يا أهلاً بيك في تحدي الـ 500 سؤال.. مش هنكرر سؤال غير لما يخلصوا! 🔥", "bot");
+    setTimeout(getNextQuestion, 1500);
 }
-.wa-header { background: var(--wa-teal); color: white; padding: 12px; display: flex; align-items: center; gap: 12px; }
-.avatar { width: 45px; height: 45px; background: #eee; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-.logout-btn { margin-right: auto; background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
 
-.streak-badge-container { display: flex; justify-content: center; padding: 10px; }
-.streak-badge { background: white; padding: 5px 20px; border-radius: 20px; font-weight: bold; border: 2px solid #fe2c55; }
+function addMessage(text, type) {
+    const chat = document.getElementById('chat-display');
+    const b = document.createElement('div');
+    b.className = `bubble ${type}`;
+    b.innerText = text;
+    chat.appendChild(b);
+    chat.scrollTop = chat.scrollHeight;
+}
 
-.chat-screen { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
-.bubble { max-width: 85%; padding: 10px 15px; border-radius: 12px; font-size: 15px; line-height: 1.4; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.1); animation: fadeIn 0.3s; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
-.bot { background: white; align-self: flex-start; border-top-left-radius: 0; }
-.user { background: var(--wa-light-green); align-self: flex-end; border-top-right-radius: 0; }
+function getNextQuestion() {
+    // لو الأسئلة خلصت، بنعيد شحنها من جديد
+    if (availableQuestions.length === 0) {
+        addMessage("مبروك! خلصت كل الأسئلة.. هنبدأ نعيدهم تاني عشوائي! 🔄", "bot");
+        availableQuestions = [...allQuestions];
+    }
+    
+    document.getElementById('typing-status').innerText = "بيكتب الآن...";
+    
+    setTimeout(() => {
+        document.getElementById('typing-status').innerText = "متصل الآن";
+        const idx = Math.floor(Math.random() * availableQuestions.length);
+        currentQuestion = availableQuestions[idx];
+        
+        // حذف السؤال المختار عشان ميتكررش
+        availableQuestions.splice(idx, 1);
+        
+        addMessage(currentQuestion.q, 'bot');
+        
+        const btnA = document.getElementById('btn-a');
+        const btnB = document.getElementById('btn-b');
+        btnA.innerText = currentQuestion.a;
+        btnB.innerText = currentQuestion.b;
+        btnA.style.display = "block";
+        btnB.style.display = "block";
+    }, 1200);
+}
 
-.input-area { background: #f0f0f0; padding: 20px; border-top: 1px solid #ddd; }
-.btn-group { display: flex; flex-direction: column; gap: 10px; }
-.answer-btn { width: 100%; padding: 15px; border: none; background: var(--wa-green); color: white; border-radius: 12px; font-weight: bold; cursor: pointer; display: none; }
+function userReply(choice) {
+    if(!currentQuestion) return;
+    addMessage(choice === 'A' ? currentQuestion.a : currentQuestion.b, 'user');
+    document.getElementById('btn-a').style.display = "none";
+    document.getElementById('btn-b').style.display = "none";
+
+    setTimeout(() => {
+        if(choice === currentQuestion.popular) {
+            streak++;
+            addMessage("🔥 وحش! أنت زينا بالظبط", "bot");
+        } else {
+            streak = 0;
+            addMessage("😅 لااا.. رد غريب أوي!", "bot");
+        }
+        document.getElementById('streak-count').innerText = streak;
+        setTimeout(getNextQuestion, 1500);
+    }, 1000);
+}
+
+function logout() { location.reload(); }
