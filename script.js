@@ -1,10 +1,10 @@
-// الأسئلة من ملفك
+// الأسئلة
 const allQuestions = [
     { q: "طفي النور والجري قبل الضلمة ؟ 🏃‍♂️", a: "أنا بسبق الضلمة", b: "كنت بطير من الرعب", popular: "A" },
     { q: "تمثيل النوم قدام أبوك ؟ 😴", a: "كنت بقوم أكلمه عادي", b: "كنت بقطع النفس خالص", popular: "B" },
     { q: "رجل برا الغطا والعفريت ؟ 🧟‍♂️", a: "أنا ملك الجرأة", b: "الغطا ده أماني الوحيد", popular: "B" },
-    { q: "قفل باب الثلاجة براحة عشان تشوف النور ؟ 💡", a: "عارف السر أصلاً!", b: "ضيعت عمري مراقبة", popular: "A" },
-    { q: "كلام في المروحة وهي شغالة (روبوت) ؟ 🤖", a: "صوتي كروان", b: "كنت بغني للريش", popular: "B" },
+    { q: "قفل باب الثلاجة براحة ؟ 💡", a: "عارف السر أصلاً!", b: "ضيعت عمري مراقبة", popular: "A" },
+    { q: "كلام في المروحة (روبوت) ؟ 🤖", a: "صوتي كروان", b: "كنت بغني للريش", popular: "B" },
     { q: "ملائة السرير وسوبر مان ؟ 🦸‍♂️", a: "طرت بجد والله", b: "اتفتحت من الوقعة", popular: "A" }
 ];
 
@@ -12,45 +12,45 @@ let availableQuestions = [...allQuestions];
 let currentQuestion = null;
 let streak = 0;
 
-// --- نظام السحابة (Local Storage) ---
+// --- نظام الحسابات السحابي (LocalStorage) ---
 function toggleAuth(isSignup) {
     document.getElementById('auth-title').innerText = isSignup ? "إنشاء حساب جديد" : "تسجيل الدخول";
-    document.getElementById('auth-buttons').style.display = isSignup ? "none" : "block";
-    document.getElementById('signup-buttons').style.display = isSignup ? "block" : "none";
+    document.getElementById('login-section').style.display = isSignup ? "none" : "block";
+    document.getElementById('signup-section').style.display = isSignup ? "block" : "none";
 }
 
 function handleSignup() {
-    const user = document.getElementById('username').value;
-    const pass = document.getElementById('password').value;
-    if(user.length < 3) return alert("الاسم قصير جداً");
-    
-    let users = JSON.parse(localStorage.getItem('gameUsers')) || {};
-    if(users[user]) return alert("المستخدم موجود بالفعل");
-    
-    users[user] = pass;
-    localStorage.setItem('gameUsers', JSON.stringify(users));
-    alert("تم إنشاء الحساب بنجاح! سجل دخولك الآن.");
+    const u = document.getElementById('username').value;
+    const p = document.getElementById('password').value;
+    if(!u || !p) return alert("اكتب البيانات كاملة");
+
+    let db = JSON.parse(localStorage.getItem('minFinaUsers')) || {};
+    if(db[u]) return alert("الاسم ده محجوز يا ريس");
+
+    db[u] = p;
+    localStorage.setItem('minFinaUsers', JSON.stringify(db));
+    alert("مبروك! حسابك اتعمل، سجل دخولك بقى");
     toggleAuth(false);
 }
 
 function handleLogin() {
-    const user = document.getElementById('username').value;
-    const pass = document.getElementById('password').value;
-    let users = JSON.parse(localStorage.getItem('gameUsers')) || {};
+    const u = document.getElementById('username').value;
+    const p = document.getElementById('password').value;
+    let db = JSON.parse(localStorage.getItem('minFinaUsers')) || {};
 
-    if(users[user] && users[user] === pass) {
+    if(db[u] && db[u] === p) {
         document.getElementById('auth-screen').style.display = 'none';
         document.getElementById('game-container').style.display = 'flex';
         startGame();
     } else {
-        alert("خطأ في الاسم أو كلمة السر");
+        alert("الاسم أو السر غلط.. تأكد إنك عملت حساب أولاً");
     }
 }
 
-// --- نظام اللعبة ---
+// --- اللعبة ---
 function startGame() {
-    addMessage(`أهلاً بك يا ${document.getElementById('username').value} في مين فينا؟ ⚡`, 'bot');
-    setTimeout(getNextQuestion, 1200);
+    addMessage(`يا هلا بيك يا ${document.getElementById('username').value} في "مين فينا؟" ✨`, 'bot');
+    setTimeout(getNextQuestion, 1000);
 }
 
 function addMessage(text, type) {
@@ -65,46 +65,45 @@ function addMessage(text, type) {
 function getNextQuestion() {
     if (availableQuestions.length === 0) availableQuestions = [...allQuestions];
     document.getElementById('vote-stats').style.display = "none";
-    
-    const idx = Math.floor(Math.random() * availableQuestions.length);
-    currentQuestion = availableQuestions[idx];
-    availableQuestions.splice(idx, 1);
-    
-    addMessage(currentQuestion.q, 'bot');
-    
-    const btnA = document.getElementById('btn-a');
-    const btnB = document.getElementById('btn-b');
-    
-    // إظهار الزرارين مع بعض للتصويت
-    btnA.innerText = currentQuestion.a;
-    btnB.innerText = currentQuestion.b;
-    btnA.style.display = "block";
-    btnB.style.display = "block";
+    document.getElementById('typing-status').innerText = "بيكتب الآن...";
+
+    setTimeout(() => {
+        document.getElementById('typing-status').innerText = "متصل الآن";
+        const idx = Math.floor(Math.random() * availableQuestions.length);
+        currentQuestion = availableQuestions[idx];
+        availableQuestions.splice(idx, 1);
+
+        addMessage(currentQuestion.q, 'bot');
+
+        const bA = document.getElementById('btn-a');
+        const bB = document.getElementById('btn-b');
+        bA.innerText = currentQuestion.a;
+        bB.innerText = currentQuestion.b;
+        bA.style.display = "block";
+        bB.style.display = "block";
+    }, 800);
 }
 
 function userReply(choice) {
-    const btnA = document.getElementById('btn-a');
-    const btnB = document.getElementById('btn-b');
-    
     addMessage(choice === 'A' ? currentQuestion.a : currentQuestion.b, 'user');
-    btnA.style.display = "none";
-    btnB.style.display = "none";
+    document.getElementById('btn-a').style.display = "none";
+    document.getElementById('btn-b').style.display = "none";
 
-    // حساب تصويت وهمي
-    const percentA = choice === 'A' ? Math.floor(Math.random() * 30) + 60 : Math.floor(Math.random() * 30) + 10;
-    const percentB = 100 - percentA;
+    // تصويت وهمي
+    const pA = choice === 'A' ? Math.floor(Math.random()*20)+70 : Math.floor(Math.random()*20)+10;
+    const pB = 100 - pA;
 
     setTimeout(() => {
         document.getElementById('vote-stats').style.display = "flex";
-        document.getElementById('stat-a').innerText = percentA;
-        document.getElementById('stat-b').innerText = percentB;
+        document.getElementById('stat-a').innerText = pA;
+        document.getElementById('stat-b').innerText = pB;
 
         if(choice === currentQuestion.popular) {
             streak++;
-            addMessage(`🔥 رد الأغلبية! (${percentA}% اختاروا مثلك)`, 'bot');
+            addMessage(`🔥 وحش! الـ ${pA}% اختاروا زيك`, 'bot');
         } else {
             streak = 0;
-            addMessage(`😅 أنت مميز! ${percentB}% فقط اختاروا مثلك`, 'bot');
+            addMessage(`😅 إجابة نادرة! ${pB}% بس زيك`, 'bot');
         }
         document.getElementById('streak-count').innerText = streak;
         setTimeout(getNextQuestion, 2000);
