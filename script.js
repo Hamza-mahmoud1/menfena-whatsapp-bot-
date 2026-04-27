@@ -1,136 +1,101 @@
 // مصفوفة الأسئلة
 const allQuestions = [
-    { q: "طفي النور والجري قبل الضلمة ؟ 🏃‍♂️", a: "أنا بسبق الضلمة", b: "كنت بطير من الرعب", popular: "A" },
-    { q: "تمثيل النوم قدام أبوك ؟ 😴", a: "كنت بقوم أكلمه عادي", b: "كنت بقطع النفس خالص", popular: "B" },
-    { q: "رجل برا الغطا والعفريت ؟ 🧟‍♂️", a: "أنا ملك الجرأة", b: "الغطا ده أماني الوحيد", popular: "B" },
-    { q: "قفل باب الثلاجة براحة ؟ 💡", a: "عارف السر أصلاً!", b: "ضيعت عمري مراقبة", popular: "A" },
-    { q: "كلام في المروحة (صوت روبوت) ؟ 🤖", a: "صوتي كروان", b: "كنت بغني للريش", popular: "B" },
-    { q: "ملائة السرير وسوبر مان ؟ 🦸‍♂️", a: "طرت بجد والله", b: "اتفتحت من الوقعة", popular: "A" }
+    { q: "طفي النور والجري قبل الضلمة؟ 🏃‍♂️", a: "أنا بسبق الضلمة!", b: "كنت بطير من الرعب", popular: "A" },
+    { q: "تمثيل النوم قدام أبوك لما يدخل؟ 😴", a: "كنت بقوم أكلمه عادي", b: "كنت بقطع النفس خالص", popular: "B" },
+    { q: "رجل برا الغطا والعفريت بالليل؟ 🧟‍♂️", a: "أنا ملك الجرأة", b: "الغطا ده أماني الوحيد", popular: "B" },
+    { q: "قفل باب الثلاجة براحة عشان تشوف النور بيفصل إمتى؟ 💡", a: "كنت بضيع عمري مراقبة", b: "عارف السر أصلاً!", popular: "A" },
+    { q: "كلام في المروحة وهي شغالة (صوت روبوت)؟ 🤖", a: "صوتي كان كروان", b: "كنت بغني للريش", popular: "B" },
+    { q: "عدم لمس فواصل السيراميك وأنت ماشي؟ 🏁", a: "مايسترو خطوات", b: "كانت لافا هتموتني لو لمستها", popular: "B" },
+    { q: "بلغ اللبانة وشجرة البطن؟ 🌳", a: "زرعت غابة في بطني", b: "كنت بكتب وصيتي من الخوف", popular: "B" },
+    { q: "ملائة السرير وسوبر مان؟ 🦸‍♂️", a: "طرت بجد والله", b: "اتفتحت من الوقعة", popular: "A" },
+    { q: "خوف من شماعة الهدوم بالليل؟ 🧥", a: "كنت بصاحبها عادي", b: "ركبي كانت بتخبط في بعض", popular: "B" },
+    { q: "شرب الشاي في غطا القزازة؟ ☕", a: "باشا من يومي", b: "برستيج الغلابة", popular: "A" }
 ];
 
 let availableQuestions = [...allQuestions];
 let currentQuestion = null;
 let streak = 0;
 
-// --- نظام الحسابات (Cloud Simulation) ---
-
-function toggleAuth(isSignup) {
-    const title = document.getElementById('auth-title');
-    const loginSec = document.getElementById('login-section');
-    const signupSec = document.getElementById('signup-section');
-    
-    if(isSignup) {
-        title.innerText = "إنشاء حساب جديد";
-        loginSec.style.display = "none";
-        signupSec.style.display = "block";
-    } else {
-        title.innerText = "تسجيل الدخول";
-        loginSec.style.display = "block";
-        signupSec.style.display = "none";
-    }
-}
-
-function handleSignup() {
+// دالة تسجيل الدخول
+function handleAuth() {
     const email = document.getElementById('email').value;
-    const pass = document.getElementById('password').value;
-
-    if(!email || !email.includes("@")) return alert("يا ريس البريد الإلكتروني مش مظبوط");
-    if(pass.length < 4) return alert("كلمة السر لازم تكون 4 أرقام أو حروف على الأقل");
-
-    let db = JSON.parse(localStorage.getItem('min_fina_users')) || {};
-    if(db[email]) return alert("الإيميل ده مسجل عندنا قبل كدة!");
-
-    db[email] = pass;
-    localStorage.setItem('min_fina_users', JSON.stringify(db));
-    alert("مبروك! حسابك اتعمل بالسحابة. سجل دخولك بقى.");
-    toggleAuth(false);
-}
-
-function handleLogin() {
-    const email = document.getElementById('email').value;
-    const pass = document.getElementById('password').value;
-    let db = JSON.parse(localStorage.getItem('min_fina_users')) || {};
-
-    if(db[email] && db[email] === pass) {
+    if(email && email.includes("@")) {
         document.getElementById('auth-screen').style.display = 'none';
         document.getElementById('game-container').style.display = 'flex';
-        startGame();
+        startNewGame();
     } else {
-        alert("الإيميل أو كلمة السر غلط.. جرب تنشئ حساب الأول");
+        alert("يا ريس دخل إيميل صح (لازم يكون فيه @)");
     }
 }
 
-// --- نظام اللعبة ---
-
-function startGame() {
-    addMessage("أهلاً بيك في تحدي 'مين فينا؟'.. ✨", "bot");
-    updateOnlineCounter();
+// بداية اللعبة
+function startNewGame() {
+    addMessage("أهلاً بيك في تحدي الـ 500 سؤال.. 🔥", "bot");
     setTimeout(getNextQuestion, 1000);
 }
 
-function updateOnlineCounter() {
-    setInterval(() => {
-        const num = Math.floor(Math.random() * 30) + 1450;
-        document.getElementById('fake-online').innerText = num.toLocaleString();
-    }, 4000);
-}
-
+// إضافة رسالة للشات
 function addMessage(text, type) {
     const chat = document.getElementById('chat-display');
-    const b = document.createElement('div');
-    b.className = `bubble ${type}`;
-    b.innerText = text;
-    chat.appendChild(b);
-    chat.scrollTop = chat.scrollHeight;
+    if(chat) {
+        const b = document.createElement('div');
+        b.className = `bubble ${type}`;
+        b.innerText = text;
+        chat.appendChild(b);
+        chat.scrollTop = chat.scrollHeight;
+    }
 }
 
+// سحب السؤال القادم بدون تكرار
 function getNextQuestion() {
-    if (availableQuestions.length === 0) availableQuestions = [...allQuestions];
-    document.getElementById('vote-stats').style.display = "none";
+    if (availableQuestions.length === 0) {
+        availableQuestions = [...allQuestions];
+        addMessage("خلصنا الأسئلة وهنعيدها تاني عشوائي! 🔄", "bot");
+    }
+    
     document.getElementById('typing-status').innerText = "بيكتب الآن...";
-
+    
     setTimeout(() => {
         document.getElementById('typing-status').innerText = "متصل الآن";
         const idx = Math.floor(Math.random() * availableQuestions.length);
         currentQuestion = availableQuestions[idx];
-        availableQuestions.splice(idx, 1);
-
+        availableQuestions.splice(idx, 1); 
+        
         addMessage(currentQuestion.q, 'bot');
-
-        // إظهار الزرارين جنب بعض (يمين وشمال)
-        const bA = document.getElementById('btn-a');
-        const bB = document.getElementById('btn-b');
-        bA.innerText = currentQuestion.a;
-        bB.innerText = currentQuestion.b;
-        bA.style.display = "block";
-        bB.style.display = "block";
-    }, 800);
-}
-
-function userReply(choice) {
-    addMessage(choice === 'A' ? currentQuestion.a : currentQuestion.b, 'user');
-    document.getElementById('btn-a').style.display = "none";
-    document.getElementById('btn-b').style.display = "none";
-
-    // تصويت وهمي
-    const pA = choice === 'A' ? Math.floor(Math.random()*20)+70 : Math.floor(Math.random()*20)+10;
-    const pB = 100 - pA;
-
-    setTimeout(() => {
-        document.getElementById('vote-stats').style.display = "flex";
-        document.getElementById('stat-a').innerText = pA;
-        document.getElementById('stat-b').innerText = pB;
-
-        if(choice === currentQuestion.popular) {
-            streak++;
-            addMessage(`🔥 وحش! الـ ${pA}% اختاروا زيك`, 'bot');
-        } else {
-            streak = 0;
-            addMessage(`😅 إجابة نادرة! ${pB}% بس زيك`, 'bot');
+        
+        const btnA = document.getElementById('btn-a');
+        const btnB = document.getElementById('btn-b');
+        if(btnA && btnB) {
+            btnA.innerText = currentQuestion.a;
+            btnB.innerText = currentQuestion.b;
+            btnA.style.display = "block";
+            btnB.style.display = "block";
         }
-        document.getElementById('streak-count').innerText = streak;
-        setTimeout(getNextQuestion, 2500);
     }, 1000);
 }
 
-function logout() { location.reload(); }
+// رد المستخدم
+function userReply(choice) {
+    if(!currentQuestion) return;
+    
+    addMessage(choice === 'A' ? currentQuestion.a : currentQuestion.b, 'user');
+    
+    document.getElementById('btn-a').style.display = "none";
+    document.getElementById('btn-b').style.display = "none";
+
+    setTimeout(() => {
+        if(choice === currentQuestion.popular) {
+            streak++;
+            addMessage("🔥 وحش! رد الأغلبية", "bot");
+        } else {
+            streak = 0;
+            addMessage("😅 رد غريب أوي!", "bot");
+        }
+        document.getElementById('streak-count').innerText = streak;
+        setTimeout(getNextQuestion, 1000);
+    }, 800);
+}
+
+function logout() { 
+    location.reload(); 
+}
